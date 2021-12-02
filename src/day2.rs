@@ -1,64 +1,49 @@
-use std::str::FromStr;
+use std::{num::ParseIntError, str::FromStr};
 
-pub struct Command {
-    directive: Direction,
-    units: i32,
+pub enum Direction {
+    Forward(i32),
+    Down(i32),
+    Up(i32),
 }
 
-enum Direction {
-    Forward,
-    Down,
-    Up,
-}
-
-impl FromStr for Command {
-    type Err = String;
+impl FromStr for Direction {
+    type Err = ParseIntError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let mut iter = s.split_whitespace();
-        let directive = match iter.next().unwrap() {
-            "forward" => Direction::Forward,
-            "down" => Direction::Down,
-            "up" => Direction::Up,
+        let (direction, units) = s.split_once(' ').unwrap();
+        let units = units.parse()?;
+
+        Ok(match direction {
+            "forward" => Self::Forward(units),
+            "down" => Self::Down(units),
+            "up" => Self::Up(units),
             _ => unreachable!(),
-        };
-        let units = iter.next().unwrap().parse().unwrap();
-        Ok(Command { directive, units })
+        })
     }
 }
 
-pub fn generator(input: &str) -> Vec<Command> {
-    input.lines().map(|line| line.parse().unwrap()).collect()
+pub fn generator(input: &str) -> Vec<Direction> {
+    input.lines().map(|l| l.parse().unwrap()).collect()
 }
 
-pub fn part1(input: &[Command]) -> i32 {
-    let mut horizontal = 0;
-    let mut depth = 0;
-
-    input.iter().for_each(|c| {
-        match c.directive {
-            Direction::Forward => horizontal += c.units,
-            Direction::Down => depth += c.units,
-            Direction::Up => depth -= c.units,
-        };
-    });
-
-    horizontal * depth
+pub fn part1(input: &[Direction]) -> i32 {
+    let (h, d) = input
+        .iter()
+        .fold((0, 0), |(h, d), direction| match direction {
+            Direction::Forward(units) => (h + units, d),
+            Direction::Down(units) => (h, d + units),
+            Direction::Up(units) => (h, d - units),
+        });
+    h * d
 }
 
-pub fn part2(input: &[Command]) -> i32 {
-    let (mut aim, mut horizontal, mut depth) = (0, 0, 0);
-
-    input.iter().for_each(|c| {
-        match c.directive {
-            Direction::Forward => {
-                horizontal += c.units;
-                depth += aim * c.units;
-            }
-            Direction::Down => aim += c.units,
-            Direction::Up => aim -= c.units,
-        };
-    });
-
-    horizontal * depth
+pub fn part2(input: &[Direction]) -> i32 {
+    let (h, d, _) = input
+        .iter()
+        .fold((0, 0, 0), |(h, d, aim), direction| match direction {
+            Direction::Forward(units) => (h + units, d + units * aim, aim),
+            Direction::Down(units) => (h, d, aim + units),
+            Direction::Up(units) => (h, d, aim - units),
+        });
+    h * d
 }
