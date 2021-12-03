@@ -15,6 +15,33 @@ pub fn part1(lines: &[Vec<u32>]) -> u32 {
     gamma * epsilon
 }
 
+pub fn part2(lines: &[Vec<u32>]) -> u32 {
+    let oxygen = {
+        let mut cloned = lines.to_vec();
+        for i in 0..12 {
+            let mode = get_mode(&cloned, i, |zero, one| zero > one);
+            cloned.retain(|line| line[i] == mode);
+            if cloned.len() == 1 {
+                break;
+            }
+        }
+        cal_binary_sum(cloned[0].as_ref())
+    };
+
+    let co2 = {
+        let mut reversed: Vec<Vec<u32>> = lines.iter().map(|line| reverse_bit(line)).collect();
+        for i in 0..12 {
+            let mode = get_mode(&reversed, i, |zero, one| zero >= one);
+            reversed.retain(|line| line[i] == mode);
+            if reversed.len() == 1 {
+                break;
+            }
+        }
+        cal_binary_sum(reversed[0].as_ref())
+    };
+    oxygen * co2
+}
+
 fn get_mode<F>(lines: &[Vec<u32>], i: usize, f: F) -> u32
 where
     F: Fn(usize, usize) -> bool,
