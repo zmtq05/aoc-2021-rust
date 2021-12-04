@@ -52,6 +52,30 @@ pub fn part1(bingo: &Bingo) -> i32 {
     unreachable!()
 }
 
+pub fn part2(bingo: &Bingo) -> i32 {
+    let Bingo { numbers, boards } = bingo;
+    let mut boards = boards.clone();
+    let mut bingo_board = vec![];
+    for number in numbers {
+        for (i, board) in boards.iter_mut().enumerate() {
+            if bingo_board.contains(&i) {
+                continue;
+            }
+            if let Some(num) = board.iter_mut().find(|num| num == &number) {
+                *num = -1;
+            }
+            if is_bingo(board) {
+                bingo_board.push(i);
+                if bingo_board.len() == 100 {
+                    let sum: i32 = board.iter().filter(|x| **x >= 0).sum();
+                    return number * sum;
+                }
+            }
+        }
+    }
+    unreachable!()
+}
+
 fn is_bingo(board: &[i32]) -> bool {
     let mut cnt = 0;
     for y in 0..5 {
