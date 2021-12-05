@@ -24,9 +24,6 @@ impl FromStr for Vent {
         Ok(Self { x1, x2, y1, y2 })
     }
 }
-pub fn generator(input: &str) -> Vec<Vent> {
-    input.lines().map(|line| line.parse().unwrap()).collect()
-}
 
 type Range = Box<dyn Iterator<Item = i32>>;
 impl Vent {
@@ -59,5 +56,10 @@ pub fn part1(vents: &[Vent]) -> usize {
     map.values().filter(|x| **x > 1).count()
 }
 
+pub fn part2(vents: &[Vent]) -> usize {
+    let mut map = HashMap::new();
+    vents
+        .iter()
+        .for_each(|v| v.range().for_each(|xy| *map.entry(xy).or_insert(0) += 1));
     map.values().filter(|x| **x > 1).count()
 }
