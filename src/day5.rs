@@ -1,4 +1,4 @@
-use std::{collections::HashMap, ops::RangeInclusive, str::FromStr};
+use std::{collections::HashMap, iter::Zip, str::FromStr};
 
 #[derive(Clone, Debug)]
 pub struct Vent {
@@ -28,40 +28,36 @@ pub fn generator(input: &str) -> Vec<Vent> {
     input.lines().map(|line| line.parse().unwrap()).collect()
 }
 
-enum Slope {
-    Horizontal(i32, RangeInclusive<i32>),
-    Vertical(i32, RangeInclusive<i32>),
-    Diagonal(RangeInclusive<i32>, RangeInclusive<i32>),
+type Range = Box<dyn Iterator<Item = i32>>;
+impl Vent {
+    fn range(&self) -> Zip<Range, Range> {
+        fn range(s: i32, e: i32) -> Range {
+            use std::cmp::Ordering::*;
+            match s.cmp(&e) {
+                Less => Box::new(s..=e),
+                Equal => Box::new(std::iter::repeat(s)),
+                Greater => Box::new((e..s + 1).rev()),
+            }
+        }
+        let Self { x1, x2, y1, y2 } = *self;
+        let x = range(x1, x2);
+        let y = range(y1, y2);
+        x.zip(y)
+    }
 }
 
-impl From<&Vent> for Slope {
-    fn from(vent: &Vent) -> Self {
-        let Vent { x1, x2, y1, y2 } = *vent;
-        let x_range = if x1 > x2 { x2..=x1 } else { x1..=x2 };
-        let y_range = if y1 > y2 { y2..=y1 } else { y1..=y2 };
-        if x1 == x2 {
-            Slope::Vertical(x1, y_range)
-        } else if y1 == y2 {
-            Slope::Horizontal(y1, x_range)
-        } else {
-            Slope::Diagonal(x_range, y_range)
-        }
-    }
+pub fn generator(input: &str) -> Vec<Vent> {
+    input.lines().map(|line| line.parse().unwrap()).collect()
 }
 
 pub fn part1(vents: &[Vent]) -> usize {
     let mut map = HashMap::new();
-    vents.iter().for_each(|vent| {
-        match Slope::from(vent) {
-            Slope::Horizontal(x, y_range) => y_range
-                .into_iter()
-                .for_each(|y| *map.entry((x, y)).or_insert(0) += 1),
-            Slope::Vertical(y, x_range) => x_range
-                .into_iter()
-                .for_each(|x| *map.entry((x, y)).or_insert(0) += 1),
-            Slope::Diagonal(_, _) => {}
-        };
-    });
+    vents
+        .iter()
+        .filter(|v| v.x1 == v.x2 || v.y1 == v.y2)
+        .for_each(|v| v.range().for_each(|xy| *map.entry(xy).or_insert(0) += 1));
+    map.values().filter(|x| **x > 1).count()
+}
 
     map.values().filter(|x| **x > 1).count()
 }
