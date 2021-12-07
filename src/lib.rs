@@ -40,5 +40,6 @@ mod test {
 
         let input = day7::generator(input);
         assert_eq!(day7::part1(&input), 37);
+        assert_eq!(day7::part2(&input), 168);
     }
 }
