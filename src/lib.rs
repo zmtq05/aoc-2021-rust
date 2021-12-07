@@ -1,6 +1,7 @@
 #![allow(dead_code)]
 mod day5;
 mod day6;
+mod day7;
 
 #[cfg(test)]
 mod test {
@@ -31,5 +32,14 @@ mod test {
         let input = day6::generator(input);
         assert_eq!(day6::part1(&input), 5934);
         assert_eq!(day6::part2(&input), 26984457539);
+    }
+
+    #[test]
+    fn day7() {
+        let input = "16,1,2,0,4,2,7,1,2,14";
+
+        let input = day7::generator(input);
+        println!("{}", input.iter().sum::<u32>());
+        assert_eq!(day7::part1(&input), 37);
     }
 }
