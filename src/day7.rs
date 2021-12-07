@@ -5,23 +5,23 @@ pub fn generator(input: &str) -> Vec<u32> {
 }
 
 pub fn part1(crabs: &[u32]) -> u32 {
-    let mut map = HashMap::new();
+    let median = {
+        let mut v = crabs.to_vec();
+        v.sort_unstable();
+        let mid = v.len() / 2;
+        v[mid]
+    };
 
     crabs
         .iter()
-        .for_each(|crab| *map.entry(*crab).or_insert(0) += 1);
-
-    let mode = map.iter().max_by_key(|x| x.1).unwrap().0;
-
-    let mut fuels = HashMap::new();
-
-    map.keys().for_each(|&x| {
-        crabs.iter().for_each(|&crab| {
-            *fuels.entry(x).or_insert(0) += if crab > x { crab - x } else { x - crab };
+        .map(|&crab| {
+            if crab > median {
+                crab - median
+            } else {
+                median - crab
+            }
         })
-    });
-
-    *fuels.values().min().unwrap()
+        .sum()
 }
 
 pub fn part2(crabs: &[u32]) -> u32 {
