@@ -39,7 +39,6 @@ mod test {
         let input = "16,1,2,0,4,2,7,1,2,14";
 
         let input = day7::generator(input);
-        println!("{}", input.iter().sum::<u32>());
         assert_eq!(day7::part1(&input), 37);
     }
 }

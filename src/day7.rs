@@ -11,16 +11,15 @@ pub fn part1(crabs: &[u32]) -> u32 {
         .iter()
         .for_each(|crab| *map.entry(*crab).or_insert(0) += 1);
 
-    let &mode = map.iter().max_by_key(|x| x.1).unwrap().0;
+    let mode = map.iter().max_by_key(|x| x.1).unwrap().0;
 
-    let mut fuel = 0;
+    let mut fuels = HashMap::new();
 
-    crabs.iter().for_each(|&crab| {
-        fuel += if crab > mode {
-            crab - mode
-        } else {
-            mode - crab
-        }
+    map.keys().for_each(|&x| {
+        crabs.iter().for_each(|&crab| {
+            *fuels.entry(x).or_insert(0) += if crab > x { crab - x } else { x - crab };
+        })
     });
-    fuel
+
+    *fuels.values().min().unwrap()
 }
