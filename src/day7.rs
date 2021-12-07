@@ -25,18 +25,15 @@ pub fn part1(crabs: &[u32]) -> u32 {
 }
 
 pub fn part2(crabs: &[u32]) -> u32 {
-    let max = crabs.iter().max().unwrap();
+    let max = *crabs.iter().max().unwrap();
 
     let mut fuels = HashMap::new();
 
-    (0..=*max).into_iter().for_each(|x| {
+    (0..=max).for_each(|x| {
         crabs.iter().for_each(|&crab| {
-            let fuel = fuels.entry(x).or_insert(0);
-            let s = x.min(crab);
-            let e = x.max(crab);
-            for i in 1..=e - s {
-                *fuel += i;
-            }
+            let fuel = fuels.entry(x).or_default();
+            let diff = if crab > x { crab - x } else { x - crab };
+            *fuel += diff * (diff + 1) / 2;
         })
     });
 
