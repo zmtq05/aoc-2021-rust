@@ -25,16 +25,19 @@ pub fn part1((_, outputs): &(Vec<Vec<&str>>, Vec<Vec<&str>>)) -> usize {
 }
 
 pub fn part2((wire_lines, output_lines): &(Vec<Vec<&str>>, Vec<Vec<&str>>)) -> usize {
-    let mut sum = 0;
-    for (wires, outputs) in wire_lines.iter().zip(output_lines) {
-        let decoder = Decoder::new(wires);
-        for (i, output) in outputs.iter().rev().enumerate() {
-            // let output = outputs[i];
-            let segment = decoder.decode(output);
-            sum += segment * 10usize.pow(i as u32);
-        }
-    }
-    sum
+    wire_lines
+        .iter()
+        .zip(output_lines)
+        .fold(0, |acc, (wires, outputs)| {
+            let decoder = Decoder::new(wires);
+            acc + outputs
+                .iter()
+                .rev()
+                .enumerate()
+                .fold(0, |acc, (i, output)| {
+                    acc + decoder.decode(output) * 10usize.pow(i as u32)
+                })
+        })
 }
 
 struct Decoder {
