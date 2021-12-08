@@ -10,6 +10,7 @@ aoc_main::main! {
     day5 : generator => part1, part2;
     day6 : generator => part1, part2;
     day7 : generator => part1, part2;
+    day8 : generator => part1, part2;
 }
 
 mod day1;
@@ -19,3 +20,4 @@ mod day4;
 mod day5;
 mod day6;
 mod day7;
+mod day8;
