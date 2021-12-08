@@ -60,5 +60,6 @@ gcafb gcf dcaebfg ecagb gf abcdeg gaef cafbge fdbac fegbdc | fgae cfgab fg bagce
 
         let input = day8::generator(input);
         assert_eq!(day8::part1(&input), 26);
+        assert_eq!(day8::part2(&input), 61229);
     }
 }
