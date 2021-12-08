@@ -6,9 +6,7 @@ pub fn generator(input: &str) -> Vec<Vec<u32>> {
 }
 
 pub fn part1(lines: &[Vec<u32>]) -> u32 {
-    let modes: Vec<u32> = (0..12)
-        .map(|i| get_mode(lines, i))
-        .collect();
+    let modes: Vec<u32> = (0..12).map(|i| get_mode(lines, i)).collect();
     let gamma = cal_binary_sum(&modes);
     let epsilon = cal_binary_sum(&reverse_bit(&modes));
 
@@ -42,8 +40,7 @@ pub fn part2(lines: &[Vec<u32>]) -> u32 {
     oxygen * co2
 }
 
-fn get_mode(lines: &[Vec<u32>], i: usize) -> u32
-{
+fn get_mode(lines: &[Vec<u32>], i: usize) -> u32 {
     let zero = lines.iter().filter(|line| line[i] == 0).count();
     let one = lines.len() - zero;
     if zero > one {
