@@ -1,21 +1,22 @@
 use std::collections::HashSet;
 
-pub fn generator(input: &str) -> (Vec<Vec<&str>>, Vec<Vec<&str>>) {
-    let split_iter = input.lines().map(|l| l.split_once(" | ").unwrap());
-
-    let a = split_iter
-        .clone()
-        .map(|x| x.0.split_whitespace().collect())
-        .collect();
-    let b = split_iter
-        .map(|x| x.1.split_whitespace().collect())
-        .collect();
-    (a, b)
+pub fn generator(input: &str) -> Vec<(Vec<&str>, Vec<&str>)> {
+    input
+        .lines()
+        .map(|line| line.split_once(" | ").unwrap())
+        .map(|pair| {
+            (
+                pair.0.split_whitespace().collect(),
+                pair.1.split_whitespace().collect(),
+            )
+        })
+        .collect()
 }
 
-pub fn part1((_, outputs): &(Vec<Vec<&str>>, Vec<Vec<&str>>)) -> usize {
-    outputs
+pub fn part1(entries: &[(Vec<&str>, Vec<&str>)]) -> usize {
+    entries
         .iter()
+        .map(|pair| &pair.1)
         .flatten()
         .filter(|s| {
             let len = s.len();
@@ -24,20 +25,17 @@ pub fn part1((_, outputs): &(Vec<Vec<&str>>, Vec<Vec<&str>>)) -> usize {
         .count()
 }
 
-pub fn part2((wire_lines, output_lines): &(Vec<Vec<&str>>, Vec<Vec<&str>>)) -> usize {
-    wire_lines
-        .iter()
-        .zip(output_lines)
-        .fold(0, |acc, (wires, outputs)| {
-            let decoder = Decoder::new(wires);
-            acc + outputs
-                .iter()
-                .rev()
-                .enumerate()
-                .fold(0, |acc, (i, output)| {
-                    acc + decoder.decode(output) * 10usize.pow(i as u32)
-                })
-        })
+pub fn part2(entries: &[(Vec<&str>, Vec<&str>)]) -> usize {
+    entries.iter().fold(0, |acc, (wires, outputs)| {
+        let decoder = Decoder::new(wires);
+        acc + outputs
+            .iter()
+            .rev()
+            .enumerate()
+            .fold(0, |acc, (i, output)| {
+                acc + decoder.decode(output) * 10usize.pow(i as u32)
+            })
+    })
 }
 
 struct Decoder {
@@ -47,7 +45,7 @@ struct Decoder {
 
 impl Decoder {
     fn new(wires: &[&str]) -> Self {
-        fn rename_me(wires: &[&str], len: usize) -> HashSet<char> {
+        fn seg_chars_to_set(wires: &[&str], len: usize) -> HashSet<char> {
             wires
                 .iter()
                 .filter(|wire| wire.len() == len)
@@ -57,8 +55,8 @@ impl Decoder {
                 .chars()
                 .collect()
         }
-        let one = rename_me(wires, 2);
-        let four = rename_me(wires, 4);
+        let one = seg_chars_to_set(wires, 2);
+        let four = seg_chars_to_set(wires, 4);
 
         Self { one, four }
     }
