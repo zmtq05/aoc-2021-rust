@@ -1,141 +1,73 @@
-use std::{collections::HashMap, ops::Add};
-
-pub fn generator(input: &str) -> Vec<Vec<u32>> {
-    input
-        .lines()
-        .map(|line| line.chars().map(|x| x.to_digit(10).unwrap()).collect())
-        .collect()
+pub fn generator(input: &str) -> HeightMap {
+    HeightMap(
+        input
+            .lines()
+            .map(|line| line.chars().map(|x| x.to_digit(10).unwrap()).collect())
+            .collect(),
+    )
 }
 
-pub fn part1(heightmap: &[Vec<u32>]) -> u32 {
-    heightmap.iter().enumerate().fold(0, |acc, (i, row)| {
-        acc + row
-            .iter()
-            .enumerate()
-            .filter_map(|(j, &target)| Adjacents::new(heightmap, i, j).check_lowest(target))
-            .fold(0, |acc, x| acc + x + 1)
-    })
+#[derive(Clone, Copy)]
+struct Point {
+    x: usize,
+    y: usize,
 }
 
-struct Adjacents([u32; 4]); // up, down, left, right
-
-impl Adjacents {
-    fn new(heightmap: &[Vec<u32>], row: usize, col: usize) -> Self {
-        let up = row
-            .checked_sub(1)
-            .map(|row| heightmap[row][col])
-            .unwrap_or(9);
-        let down = heightmap.get(row + 1).map(|v| v[col]).unwrap_or(9);
-        let left = col
-            .checked_sub(1)
-            .map(|col| heightmap[row][col])
-            .unwrap_or(9);
-        let right = *heightmap[row].get(col + 1).unwrap_or(&9);
-        Self([up, down, left, right])
-    }
-
-    fn check_lowest(&self, target: u32) -> Option<u32> {
-        self.0
-            .as_ref()
-            .iter()
-            .all(|adj| target < *adj)
-            .then(|| target)
+impl From<(usize, usize)> for Point {
+    fn from((x, y): (usize, usize)) -> Self {
+        Self { x, y }
     }
 }
 
-const D: [Coord; 4] = [Coord(-1, 0), Coord(1, 0), Coord(0, -1), Coord(0, 1)];
+pub struct HeightMap(Vec<Vec<u32>>);
 
-struct Basin {
-    height_map: Vec<Vec<u32>>,
-    visited: HashMap<Coord, bool>,
-}
+impl HeightMap {
+    fn size(&self) -> (usize, usize) {
+        // y size, x size
+        (self.0.len(), self.0[0].len())
+    }
 
-impl Basin {
-    fn new(height_map: &[Vec<u32>]) -> Self {
-        Self {
-            height_map: height_map.to_vec(),
-            visited: Default::default(),
+    fn adjacents(&self, point: Point) -> Vec<Point> {
+        let (ysize, xsize) = self.size();
+        let mut v = vec![];
+        if point.x + 1 < xsize {
+            v.push((point.x + 1, point.y).into());
         }
-    }
-
-    fn dfs(&mut self, now: Coord) -> u32 {
-        let mut sum = 0;
-        let entry = self.visited.entry(now).or_default();
-        if *entry {
-            sum += 1;
+        if point.x != 0 {
+            v.push((point.x - 1, point.y).into());
         }
-        *entry = true;
-        for coord in D {
-            let next = now + coord;
-            if next.is_out_of_range() {
-                continue;
-            }
-            if next.get(&self.height_map) <= now.get(&self.height_map)
-                || next.get(&self.height_map) == 9
-            {
-                continue;
-            }
-            sum += self.dfs(next);
+        if point.y + 1 < ysize {
+            v.push((point.x, point.y + 1).into());
         }
-        sum
+        if point.y != 0 {
+            v.push((point.x, point.y - 1).into());
+        }
+        v
     }
 
-    fn clear(&mut self) {
-        self.visited.clear()
-    }
-}
-
-#[derive(Hash, PartialEq, Eq, Clone, Copy)]
-struct Coord(i32, i32);
-
-impl Coord {
-    fn is_out_of_range(&self) -> bool {
-        self.0.is_negative() || self.1.is_negative() || self.0 >= 5 || self.1 >= 10
+    fn get(&self, point: Point) -> u32 {
+        self.0[point.y][point.x]
     }
 
-    fn get(&self, heightmap: &[Vec<u32>]) -> u32 {
-        heightmap[self.0 as usize][self.1 as usize]
-    }
-}
-
-impl From<(i32, i32)> for Coord {
-    fn from(pair: (i32, i32)) -> Self {
-        Self(pair.0, pair.1)
-    }
-}
-
-impl Add for Coord {
-    type Output = Self;
-
-    fn add(self, rhs: Self) -> Self::Output {
-        Self(self.0 + rhs.0, self.1 + rhs.1)
-    }
-}
-
-pub fn part2(heightmap: &[Vec<u32>]) -> u32 {
-    let mut v = vec![];
-
-    let mut basin = Basin::new(heightmap);
-    for i in 0..heightmap.len() {
-        for j in 0..heightmap[i].len() {
-            let now = Coord(i as i32, j as i32);
-            let mut lower = true;
-            for coord in D {
-                let nearby = now + coord;
-                if nearby.is_out_of_range() {
-                    continue;
-                }
-                if nearby.get(heightmap) <= now.get(heightmap) {
-                    lower = false;
+    fn low_points(&self) -> Vec<Point> {
+        let (ysize, xsize) = self.size();
+        let mut v = vec![];
+        for y in 0..ysize {
+            for x in 0..xsize {
+                let point = Point { x, y };
+                let now = self.get(point);
+                if self.adjacents(point).iter().all(|adj| self.get(*adj) > now) {
+                    v.push(point);
                 }
             }
-            if lower {
-                basin.clear();
-                v.push(basin.dfs(now));
-            }
         }
+        v
     }
-    v.sort_unstable();
-    v.reverse();
-    v[0] * v[1] * v[2]
+}
+
+pub fn part1(height_map: &HeightMap) -> u32 {
+    height_map
+        .low_points()
+        .iter()
+        .fold(0, |acc, x| acc + height_map.get(*x) + 1)
 }
