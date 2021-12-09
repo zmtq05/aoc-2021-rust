@@ -7,52 +7,28 @@ pub fn generator(input: &str) -> Vec<Vec<u32>> {
 
 pub fn part1(heightmap: &[Vec<u32>]) -> u32 {
     heightmap.iter().enumerate().fold(0, |acc, (i, row)| {
-        acc + row
-            .iter()
-            .enumerate()
-            .filter_map(|(j, col)| Adjacent::new(heightmap, j, i).is_lowest())
-            .sum::<u32>()
+        acc + row.iter().enumerate()
+            .filter_map(|(j, &target)| Adjacents::new(heightmap, i, j).check_lowest(target))
+            .fold(0, |acc, x| acc + x + 1)
     })
 }
 
-struct Adjacent {
-    target: u32,
-    up: u32,
-    down: u32,
-    left: u32,
-    right: u32,
-}
+struct Adjacents([u32; 4]); // up, down, left, right
 
-impl Adjacent {
-    fn new(heightmap: &[Vec<u32>], col: usize, row: usize) -> Self {
-        let target = heightmap[row][col];
-        let up = {
-            if let Some(i) = row.checked_sub(1) {
-                heightmap[i][col]
-            } else {
-                9
-            }
-        };
+impl Adjacents {
+    fn new(heightmap: &[Vec<u32>], row: usize, col: usize) -> Self {
+        let up = row.checked_sub(1).map(|row| heightmap[row][col]).unwrap_or(9);
         let down = heightmap.get(row + 1).map(|v| v[col]).unwrap_or(9);
-        let left = if let Some(col) = col.checked_sub(1) {
-            heightmap[row][col]
-        } else {
-            9
-        };
+        let left = col.checked_sub(1).map(|col| heightmap[row][col]).unwrap_or(9);
         let right = *heightmap[row].get(col + 1).unwrap_or(&9);
-        Self {
-            target,
-            up,
-            down,
-            left,
-            right,
-        }
+        Self([up, down, left, right])
     }
 
-    fn is_lowest(&self) -> Option<u32> {
-        [self.up, self.down, self.left, self.right]
-            .into_iter()
-            .all(|adj| self.target < adj)
-            .then(|| self.target + 1)
+    fn check_lowest(&self, target: u32) -> Option<u32> {
+        self.0
+            .as_ref()
+            .iter()
+            .all(|adj| target < *adj)
+            .then(|| target)
     }
 }
