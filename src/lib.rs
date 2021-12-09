@@ -3,6 +3,7 @@ mod day5;
 mod day6;
 mod day7;
 mod day8;
+mod day9;
 
 #[cfg(test)]
 mod test {
@@ -61,5 +62,18 @@ gcafb gcf dcaebfg ecagb gf abcdeg gaef cafbge fdbac fegbdc | fgae cfgab fg bagce
         let input = day8::generator(input);
         assert_eq!(day8::part1(&input), 26);
         assert_eq!(day8::part2(&input), 61229);
+    }
+
+    #[test]
+    fn day9() {
+        let input = "2199943210
+3987894921
+9856789892
+8767896789
+9899965678";
+
+        let input = day9::generator(input);
+        assert_eq!(day9::part1(&input), 15);
+        assert_eq!(day9::part2(&input), 1134);
     }
 }

@@ -4,6 +4,5 @@ name = "aoc-2021"
 version = "0.1.0"
 
 [dependencies]
-[dependencies.aoc-main]
-features = ["bench"]
-version = "*"
+itertools = "0.10"
+aoc-main = "0.3.0"
