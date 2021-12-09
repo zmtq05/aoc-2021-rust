@@ -1,3 +1,7 @@
+use std::collections::HashSet;
+
+use itertools::Itertools;
+
 pub fn generator(input: &str) -> HeightMap {
     HeightMap(
         input
@@ -7,7 +11,7 @@ pub fn generator(input: &str) -> HeightMap {
     )
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 struct Point {
     x: usize,
     y: usize,
@@ -63,6 +67,41 @@ impl HeightMap {
         }
         v
     }
+
+    fn bfs(&self, start: Point) -> HashSet<Point> {
+        let mut checked = vec![];
+        let mut to_check = vec![start];
+
+        while !to_check.is_empty() {
+            let next = to_check.pop().unwrap();
+            checked.push(next);
+
+            to_check.extend(
+                self.adjacents(next)
+                    .iter()
+                    .filter(|&&x| self.get(x) != 9 && !checked.contains(&x)),
+            );
+        }
+
+        checked.into_iter().collect()
+    }
+
+    fn basins(&self) -> Vec<HashSet<Point>> {
+        let mut low_points = self.low_points();
+        let mut basins = vec![];
+
+        while !low_points.is_empty() {
+            let basin = self.bfs(low_points.pop().unwrap());
+            low_points = low_points
+                .into_iter()
+                .filter(|x| !basin.contains(x))
+                .collect();
+
+            basins.push(basin);
+        }
+
+        basins
+    }
 }
 
 pub fn part1(height_map: &HeightMap) -> u32 {
@@ -70,4 +109,15 @@ pub fn part1(height_map: &HeightMap) -> u32 {
         .low_points()
         .iter()
         .fold(0, |acc, x| acc + height_map.get(*x) + 1)
+}
+
+pub fn part2(height_map: &HeightMap) -> usize {
+    height_map
+        .basins()
+        .into_iter()
+        .map(|basin| basin.len())
+        .sorted()
+        .rev()
+        .take(3)
+        .product()
 }
