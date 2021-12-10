@@ -12,9 +12,11 @@ pub fn part1(lines: &[VecDeque<char>]) -> u32 {
             let state = State::from(bracket);
             match &state {
                 State::Open(_) => states.push(state),
-                State::Close(bracket) => if !rename_me(&mut states, bracket, &mut sum) {
-                    break;
-                },
+                State::Close(bracket) => {
+                    if !rename_me(&mut states, bracket, &mut sum) {
+                        break;
+                    }
+                }
             };
         }
     }
@@ -36,13 +38,13 @@ pub fn part2(lines: &[VecDeque<char>]) -> u64 {
                         match last {
                             State::Open(last_bracket) if last_bracket == bracket => {
                                 states.pop();
-                            },
+                            }
                             _ => continue 'outer,
                         }
                     } else {
                         continue 'outer;
                     }
-                },
+                }
             }
         }
 
@@ -92,7 +94,7 @@ impl Bracket {
             Bracket::Parentheses => 3,
             Bracket::Square => 57,
             Bracket::Curly => 1197,
-            Bracket::Angle => 25137
+            Bracket::Angle => 25137,
         }
     }
 
@@ -119,12 +121,10 @@ impl From<char> for State {
             ']' => Close(Square),
             '<' => Open(Angle),
             '>' => Close(Angle),
-            _ => unreachable!()
+            _ => unreachable!(),
         }
     }
 }
-
-
 
 enum State {
     Open(Bracket),
