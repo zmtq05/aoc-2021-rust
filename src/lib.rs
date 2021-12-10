@@ -1,4 +1,5 @@
 #![allow(dead_code)]
+mod day10;
 mod day5;
 mod day6;
 mod day7;
@@ -75,5 +76,22 @@ gcafb gcf dcaebfg ecagb gf abcdeg gaef cafbge fdbac fegbdc | fgae cfgab fg bagce
         let input = day9::generator(input);
         assert_eq!(day9::part1(&input), 15);
         assert_eq!(day9::part2(&input), 1134);
+    }
+
+    #[test]
+    fn day10() {
+        let input = "[({(<(())[]>[[{[]{<()<>>
+[(()[<>])]({[<{<<[]>>(
+{([(<{}[<>[]}>{[]{[(<()>
+(((({<>}<{<{<>}{[]{[]{}
+[[<[([]))<([[{}[[()]]]
+[{[{({}]{}}([{[{{{}}([]
+{<[[]]>}<{[{[{[]{()[[[]
+[<(<(<(<{}))><([]([]()
+<{([([[(<>()){}]>(<<{{
+<{([{{}}[<[[[<>{}]]]>[]]";
+
+        let input = day10::generator(input);
+        assert_eq!(day10::part1(&input), 26397);
     }
 }
