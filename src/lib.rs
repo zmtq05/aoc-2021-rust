@@ -93,5 +93,6 @@ gcafb gcf dcaebfg ecagb gf abcdeg gaef cafbge fdbac fegbdc | fgae cfgab fg bagce
 
         let input = day10::generator(input);
         assert_eq!(day10::part1(&input), 26397);
+        assert_eq!(day10::part2(&input), 288957);
     }
 }
