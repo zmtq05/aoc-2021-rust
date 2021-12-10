@@ -12,11 +12,10 @@ pub fn part1(lines: &[VecDeque<char>]) -> u32 {
             let state = State::from(bracket);
             match &state {
                 State::Open(_) => states.push(state),
-                State::Close(bracket) => {
-                    if !rename_me(&mut states, bracket, &mut sum) {
-                        break;
-                    }
-                }
+                State::Close(bracket) => if let Some(point) = pop_or_point(&mut states, bracket) {
+                    sum += point;
+                    break;
+                },
             };
         }
     }
@@ -64,27 +63,21 @@ pub fn part2(lines: &[VecDeque<char>]) -> u64 {
     scores[scores.len() / 2]
 }
 
-fn rename_me(states: &mut Vec<State>, bracket: &Bracket, sum: &mut u32) -> bool {
-    if let Some(last) = states.last() {
-        if let State::Open(last_bracket) = last {
-            if last_bracket == bracket {
-                states.pop();
-                return true;
-            } else {
-                *sum += bracket.point();
-            }
+fn pop_or_point(states: &mut Vec<State>, bracket: &Bracket) -> Option<u32> {
+    if let Some(State::Open(last_bracket)) = states.last() {
+        if last_bracket == bracket {
+            states.pop();
+            return None;
         }
-    } else {
-        *sum += bracket.point();
     }
-    false
+    Some(bracket.point())
 }
 
 #[derive(PartialEq, Eq)]
 enum Bracket {
     Parentheses,
-    Curly,
     Square,
+    Curly,
     Angle,
 }
 
