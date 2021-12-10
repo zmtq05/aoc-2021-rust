@@ -14,9 +14,11 @@ pub fn part1(lines: &[Vec<Bracket>]) -> u32 {
         for bracket in line {
             match bracket.state {
                 State::Open => open_brackets.push(bracket.kind.clone()),
-                State::Close => if open_brackets.pop().unwrap() != bracket.kind {
-                    sum += bracket.kind.point();
-                    break;
+                State::Close => {
+                    if open_brackets.pop().unwrap() != bracket.kind {
+                        sum += bracket.kind.point();
+                        break;
+                    }
                 }
             }
         }
