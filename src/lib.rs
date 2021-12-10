@@ -1,10 +1,10 @@
 #![allow(dead_code)]
-mod day10;
-mod day5;
-mod day6;
-mod day7;
-mod day8;
-mod day9;
+mod d05;
+mod d06;
+mod d07;
+mod d08;
+mod d09;
+mod d10;
 
 #[cfg(test)]
 mod test {
@@ -21,10 +21,10 @@ mod test {
 3,4 -> 1,4
 0,0 -> 8,8
 5,5 -> 8,2";
-        let vents = day5::generator(a);
-        let p1 = day5::part1(&vents);
+        let vents = d05::generator(a);
+        let p1 = d05::part1(&vents);
         assert_eq!(p1, 5);
-        let p2 = day5::part2(&vents);
+        let p2 = d05::part2(&vents);
         assert_eq!(p2, 12);
     }
 
@@ -32,18 +32,18 @@ mod test {
     fn day6() {
         let input = "3,4,3,1,2";
 
-        let input = day6::generator(input);
-        assert_eq!(day6::part1(&input), 5934);
-        assert_eq!(day6::part2(&input), 26984457539);
+        let input = d06::generator(input);
+        assert_eq!(d06::part1(&input), 5934);
+        assert_eq!(d06::part2(&input), 26984457539);
     }
 
     #[test]
     fn day7() {
         let input = "16,1,2,0,4,2,7,1,2,14";
 
-        let input = day7::generator(input);
-        assert_eq!(day7::part1(&input), 37);
-        assert_eq!(day7::part2(&input), 168);
+        let input = d07::generator(input);
+        assert_eq!(d07::part1(&input), 37);
+        assert_eq!(d07::part2(&input), 168);
     }
 
     #[test]
@@ -60,9 +60,9 @@ bdfegc cbegaf gecbf dfcage bdacg ed bedf ced adcbefg gebcd | ed bcgafe cdgba cbg
 egadfb cdbfeg cegd fecab cgb gbdefca cg fgcdab egfdb bfceg | gbdfcae bgc cg cgb
 gcafb gcf dcaebfg ecagb gf abcdeg gaef cafbge fdbac fegbdc | fgae cfgab fg bagce";
 
-        let input = day8::generator(input);
-        assert_eq!(day8::part1(&input), 26);
-        assert_eq!(day8::part2(&input), 61229);
+        let input = d08::generator(input);
+        assert_eq!(d08::part1(&input), 26);
+        assert_eq!(d08::part2(&input), 61229);
     }
 
     #[test]
@@ -73,9 +73,9 @@ gcafb gcf dcaebfg ecagb gf abcdeg gaef cafbge fdbac fegbdc | fgae cfgab fg bagce
 8767896789
 9899965678";
 
-        let input = day9::generator(input);
-        assert_eq!(day9::part1(&input), 15);
-        assert_eq!(day9::part2(&input), 1134);
+        let input = d09::generator(input);
+        assert_eq!(d09::part1(&input), 15);
+        assert_eq!(d09::part2(&input), 1134);
     }
 
     #[test]
@@ -91,8 +91,8 @@ gcafb gcf dcaebfg ecagb gf abcdeg gaef cafbge fdbac fegbdc | fgae cfgab fg bagce
 <{([([[(<>()){}]>(<<{{
 <{([{{}}[<[[[<>{}]]]>[]]";
 
-        let input = day10::generator(input);
-        assert_eq!(day10::part1(&input), 26397);
-        assert_eq!(day10::part2(&input), 288957);
+        let input = d10::generator(input);
+        assert_eq!(d10::part1(&input), 26397);
+        assert_eq!(d10::part2(&input), 288957);
     }
 }

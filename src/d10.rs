@@ -11,7 +11,7 @@ pub fn part1(lines: &[Vec<Bracket>]) -> u32 {
     for line in lines {
         let mut open_brackets = vec![];
 
-        for Bracket{kind, state} in line {
+        for Bracket { kind, state } in line {
             match state {
                 State::Open => open_brackets.push(kind),
                 State::Close => {
@@ -31,7 +31,7 @@ pub fn part2(lines: &[Vec<Bracket>]) -> u64 {
     let mut scores = vec![];
     'outer: for line in lines {
         let mut open_brackets = vec![];
-        for Bracket{ kind, state } in line {
+        for Bracket { kind, state } in line {
             match state {
                 State::Open => open_brackets.push(kind),
                 State::Close => {
