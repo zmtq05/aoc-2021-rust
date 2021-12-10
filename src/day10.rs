@@ -9,14 +9,14 @@ pub fn part1(lines: &[Vec<Bracket>]) -> u32 {
     let mut sum = 0;
 
     for line in lines {
-        let mut open_brackets: Vec<Kind> = vec![];
+        let mut open_brackets = vec![];
 
-        for bracket in line {
-            match bracket.state {
-                State::Open => open_brackets.push(bracket.kind.clone()),
+        for Bracket{kind, state} in line {
+            match state {
+                State::Open => open_brackets.push(kind),
                 State::Close => {
-                    if open_brackets.pop().unwrap() != bracket.kind {
-                        sum += bracket.kind.point();
+                    if open_brackets.pop().unwrap() != kind {
+                        sum += kind.point();
                         break;
                     }
                 }
@@ -31,11 +31,11 @@ pub fn part2(lines: &[Vec<Bracket>]) -> u64 {
     let mut scores = vec![];
     'outer: for line in lines {
         let mut open_brackets = vec![];
-        for bracket in line {
-            match bracket.state {
-                State::Open => open_brackets.push(bracket.kind.clone()),
+        for Bracket{ kind, state } in line {
+            match state {
+                State::Open => open_brackets.push(kind),
                 State::Close => {
-                    if open_brackets.pop().unwrap() != bracket.kind {
+                    if open_brackets.pop().unwrap() != kind {
                         continue 'outer; // ignore corrupted
                     }
                 }
@@ -52,7 +52,6 @@ pub fn part2(lines: &[Vec<Bracket>]) -> u64 {
     scores[scores.len() / 2]
 }
 
-#[derive(Clone)]
 pub struct Bracket {
     kind: Kind,
     state: State,
@@ -100,7 +99,7 @@ impl From<char> for Bracket {
     }
 }
 
-#[derive(PartialEq, Eq, Clone)]
+#[derive(PartialEq, Eq)]
 pub enum Kind {
     Parentheses,
     Square,
