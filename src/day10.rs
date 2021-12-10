@@ -25,45 +25,30 @@ pub fn part1(lines: &[Vec<Bracket>]) -> u32 {
     sum
 }
 
-// pub fn part2(lines: &[VecDeque<char>]) -> u64 {
-//     let mut scores = vec![];
-//     'outer: for mut line in lines.to_vec() {
-//         let mut sum = 0;
-//         let mut states = vec![];
-//         while let Some(bracket) = line.pop_front() {
-//             let state = State::from(bracket);
-//             match &state {
-//                 State::Open(_) => states.push(state),
-//                 State::Close(bracket) => {
-//                     if let Some(last) = states.last() {
-//                         match last {
-//                             State::Open(last_bracket) if last_bracket == bracket => {
-//                                 states.pop();
-//                             }
-//                             _ => continue 'outer,
-//                         }
-//                     } else {
-//                         continue 'outer;
-//                     }
-//                 }
-//             }
-//         }
-
-//         for state in states.into_iter().rev() {
-//             match state {
-//                 State::Open(bracket) => {
-//                     sum *= 5;
-//                     sum += bracket.point2();
-//                 }
-//                 State::Close(_) => unreachable!(),
-//             }
-//         }
-
-//         scores.push(sum);
-//     }
-//     scores.sort_unstable();
-//     scores[scores.len() / 2]
-// }
+pub fn part2(lines: &[Vec<Bracket>]) -> u64 {
+    let mut scores = vec![];
+    'outer: for line in lines {
+        let mut open_brackets = vec![];
+        for bracket in line {
+            match bracket.state {
+                State::Open => open_brackets.push(bracket.kind.clone()),
+                State::Close => {
+                    if open_brackets.pop().unwrap() != bracket.kind {
+                        continue 'outer; // ignore corrupted
+                    }
+                }
+            }
+        }
+        let sum = open_brackets
+            .into_iter()
+            .rev()
+            .map(|kind| kind.point2())
+            .fold(0, |acc, point| acc * 5 + point);
+        scores.push(sum);
+    }
+    scores.sort_unstable();
+    scores[scores.len() / 2]
+}
 
 #[derive(Clone)]
 pub struct Bracket {
