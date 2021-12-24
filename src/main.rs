@@ -3,25 +3,25 @@
 aoc_main::main! {
     year 2021;
 
-    d01 : generator => part1, part2, part1_v2, part2_v2;
-    d02 : generator => part1, part2;
-    d03 : generator => part1, part2;
-    d04 : generator => part1, part2;
-    d05 : generator => part1, part2;
-    d06 : generator => part1, part2;
-    d07 : generator => part1, part2;
-    d08 : generator => part1, part2;
-    d09 : generator => part1, part2;
-    d10 : generator => part1, part2;
+    day01 : generator => part1, part2, part1_v2, part2_v2;
+    day02 : generator => part1, part2;
+    day03 : generator => part1, part2;
+    day04 : generator => part1, part2;
+    day05 : generator => part1, part2;
+    day06 : generator => part1, part2;
+    day07 : generator => part1, part2;
+    day08 : generator => part1, part2;
+    day09 : generator => part1, part2;
+    day10 : generator => part1, part2;
 }
 
-mod d01;
-mod d02;
-mod d03;
-mod d04;
-mod d05;
-mod d06;
-mod d07;
-mod d08;
-mod d09;
-mod d10;
+mod day01;
+mod day02;
+mod day03;
+mod day04;
+mod day05;
+mod day06;
+mod day07;
+mod day08;
+mod day09;
+mod day10;

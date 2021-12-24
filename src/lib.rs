@@ -1,10 +1,10 @@
 #![allow(dead_code)]
-mod d05;
-mod d06;
-mod d07;
-mod d08;
-mod d09;
-mod d10;
+mod day05;
+mod day06;
+mod day07;
+mod day08;
+mod day09;
+mod day10;
 
 #[cfg(test)]
 mod test {
@@ -21,10 +21,10 @@ mod test {
             let input = parse_input!($day);
             $(assert_eq!($day::$part(&input), $expected);)*
         }};
-        ($day:ident; $expected:expr, $expected2:expr$(,)?) => {{
+        ($day:ident; $x:expr, $x2:expr$(,)?) => {{
             let input = parse_input!($day);
-            assert_eq!($day::part1(&input), $expected);
-            assert_eq!($day::part2(&input), $expected2);
+            assert_eq!($day::part1(&input), $x);
+            assert_eq!($day::part2(&input), $x2);
         }};
         ($day:ident; $expected:expr$(,)?) => {{
             let input = parse_input!($day);
@@ -34,54 +34,54 @@ mod test {
 
     use super::*;
     #[test]
-    fn d05() {
+    fn day05() {
         test_small! {
-            d05;
+            day05;
             5,
             12,
         }
     }
 
     #[test]
-    fn d06() {
+    fn day06() {
         test_small! {
-            d06;
+            day06;
             5934,
             26984457539,
         }
     }
 
     #[test]
-    fn d07() {
+    fn day07() {
         test_small! {
-            d07;
+            day07;
             37,
             168,
         }
     }
 
     #[test]
-    fn d08() {
+    fn day08() {
         test_small! {
-            d08;
+            day08;
             26,
             61229,
         }
     }
 
     #[test]
-    fn d09() {
+    fn day09() {
         test_small! {
-            d09;
+            day09;
             15,
             1134,
         }
     }
 
     #[test]
-    fn d10() {
+    fn day10() {
         test_small! {
-            d10;
+            day10;
             26397,
             288957,
         }
